@@ -1,0 +1,1 @@
+(counter, multiplier, compute(counter))

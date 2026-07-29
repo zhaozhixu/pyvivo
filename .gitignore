@@ -1,0 +1,11 @@
+*~
+*.bak
+debug/
+build/
+*.o
+*.a
+*.so
+*.pyc
+__pycache__
+.DS_Store
+.agent-shell
