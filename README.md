@@ -60,13 +60,6 @@ The suite is standard-library only:
 python -m unittest discover -s tests
 ```
 
-pytest also works if you prefer it (`pip install pytest`, or `uv sync --extra
-test`):
-
-```sh
-python -m pytest
-```
-
 ## Examples
 
 These drive pyvivo against the sample programs in `example/`.
@@ -79,7 +72,7 @@ Terminal 1:
 python example/target.py
 ```
 
-Terminal 2 (`PID` is printed by the target):
+Terminal 2 (`PID` is printed by the target, `sudo` may be required):
 
 ```sh
 python -m pyvivo remote PID attach
@@ -93,7 +86,7 @@ Every command except `attach` automatically attaches if necessary. `detach`
 does not attach merely to report that the process is already detached.
 
 On macOS, attaching needs the target's Mach task port, which the OS grants only
-to root — parent/child ancestry does not help — so prefix these commands, and
+to root — parent/child ancestry does not help either — so prefix these commands, and
 the programmatic demos below, with `sudo`:
 
 ```sh
@@ -106,15 +99,32 @@ sudo and non-sudo invocations computes different paths.
 
 ### Process trees
 
-For a generic local multi-process Python application, pyvivo can recursively
-discover a root process and all descendants:
+pyvivo can recursively discover a root process and all its descendants, then run
+one command against the whole tree and aggregate the per-process results. To try
+it against the sample tree in `example/`:
+
+Terminal 1 (a root plus two child workers; it prints the root pid):
 
 ```sh
-python -m pyvivo tree ROOT_PID list
-python -m pyvivo tree ROOT_PID attach
-python -m pyvivo tree ROOT_PID --descendants-only stack
-python -m pyvivo tree ROOT_PID --descendants-only detach --rollback
+python example/tree_target.py --children 2
+#   tree root pid=ROOT children=[...]
 ```
+
+Terminal 2 (`sudo` may be required):
+
+```sh
+python -m pyvivo tree ROOT list                        # discover the whole tree
+python -m pyvivo tree ROOT --descendants-only stack
+python -m pyvivo tree ROOT --descendants-only eval 'compute(3)'
+python -m pyvivo tree ROOT --descendants-only patch __main__:compute example/patch_compute.py
+python -m pyvivo tree ROOT --descendants-only rollback SHARED_PATCH_ID   # id printed by the patch above
+python -m pyvivo tree ROOT --descendants-only detach --rollback
+```
+
+`--descendants-only` excludes the root; drop it to include the root too — the
+sample tree is homogeneous, so every process (root included) exposes
+`__main__:compute`. The same commands work for any local multi-process Python
+application, not just this sample.
 
 Tree discovery is framework-neutral: it uses OS parent/child relationships and
 does not interpret application-specific environment variables. Discovery reads

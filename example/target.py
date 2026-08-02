@@ -30,7 +30,7 @@ def main() -> None:
     print(f"target pid={os.getpid()}", flush=True)
     while True:
         result = compute(counter)
-        print(f"tick counter={counter} result={result}", flush=True)
+        print(f"[{os.getpid()}] counter={counter} compute={result}", flush=True)
         counter += 1
         time.sleep(args.interval)
 

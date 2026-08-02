@@ -2,8 +2,10 @@
 
 Spawns child workers (each ``example/target.py``) and then runs the same tick
 loop itself, so the whole tree is homogeneous: every process exposes
-``__main__:compute`` over its own ``counter``. Children are terminated when
-this root receives SIGTERM, so tearing the root down never orphans workers.
+``__main__:compute`` over its own ``counter``, and prints a ``[pid] counter=…
+compute=…`` line each tick so you can watch the whole tree while driving it.
+Children inherit this process's stdout, and are terminated when the root
+receives SIGTERM, so tearing the root down never orphans workers.
 
     python example/tree_target.py --children 2
 """
@@ -33,8 +35,6 @@ def _spawn_children(count: int, interval: float) -> list[subprocess.Popen]:
         children.append(
             subprocess.Popen(
                 [sys.executable, target, "--interval", str(interval)],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
             )
         )
     return children
@@ -62,7 +62,8 @@ def main() -> None:
     )
     try:
         while True:
-            compute(counter)
+            result = compute(counter)
+            print(f"[{os.getpid()}] counter={counter} compute={result}", flush=True)
             counter += 1
             time.sleep(args.interval)
     finally:
