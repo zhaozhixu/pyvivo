@@ -1,6 +1,6 @@
 # pyvivo
 
-`pyvivo` is an experimental, REPL-style development tool for inspecting and
+`pyvivo` is a REPL-style development tool for inspecting and
 modifying a running CPython process. It uses Python 3.14's PEP 768
 `sys.remote_exec()` API to bootstrap a small in-process agent, then
 communicates through a mode-`0600` Unix-domain socket.
@@ -42,6 +42,11 @@ With [uv](https://docs.astral.sh/uv/):
 
 ```sh
 uv venv --python 3.14
+
+# Install from PyPI
+uv pip install pyvivo
+
+# Install from source
 uv sync
 ```
 
@@ -49,6 +54,11 @@ With pip:
 
 ```sh
 python -m venv .venv && . .venv/bin/activate
+
+# Install from PyPI
+pip install pyvivo
+
+# Install from source
 pip install -e .
 ```
 
