@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.14"
 license = "MIT"
 authors = [
-    { name = "pyvivo contributors" },
+    { name = "Zhixu Zhao", email = "zhixu001@foxmail.com" },
 ]
 keywords = ["cpython", "debugging", "pep-768", "runtime", "hot-patching"]
 classifiers = [
@@ -23,6 +23,11 @@ classifiers = [
     "Topic :: Software Development :: Debuggers",
 ]
 dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/zhaozhixu/pyvivo"
+Repository = "https://github.com/zhaozhixu/pyvivo"
+Issues = "https://github.com/zhaozhixu/pyvivo/issues"
 
 [project.optional-dependencies]
 test = ["pytest>=8"]
